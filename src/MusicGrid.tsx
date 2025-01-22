@@ -1,12 +1,11 @@
-import { Box, Paper, PaperTypeMap, TextField, Typography } from "@mui/material";
+import { Box, Paper, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
-import * as songs from "./data.json";
 import { Search } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./state/store";
-import { fetchSongs, getSongs } from "./state/MusicSlice";
+import { fetchSongs } from "./state/MusicSlice";
 import MusicPlayer from "./MusicPlayer";
 
 const Item = styled(Paper)(({ theme }) => ({

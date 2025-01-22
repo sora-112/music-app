@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import songs from "../data.json";
 
 interface MusicState {
@@ -17,7 +17,7 @@ const musicSlice = createSlice({
   name: "music",
   initialState,
   reducers: {
-    getSongs: (state, action) => {
+    getSongs: (state) => {
       state.songs = songs.results;
     },
   },
@@ -31,7 +31,7 @@ const musicSlice = createSlice({
         state.error = action.error.message;
         state.loading = false;
       })
-      .addCase(fetchSongs.pending, (state, action) => {
+      .addCase(fetchSongs.pending, (state) => {
         state.loading = true;
       });
   },
