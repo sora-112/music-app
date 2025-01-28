@@ -14,19 +14,26 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+const StyledGrid = styled(Grid)({
+  height: "100%",
+});
+
 export default function MusicGrid() {
   const [searchTerm, setSearchTerm] = useState("");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
-    dispatch(fetchSongs(event.target.value));
   };
 
   const songs = useSelector((state: RootState) => state.music.songs);
+  const loading = useSelector((state: RootState) => state.music.loading);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchSongs(searchTerm));
-  }, []);
+    const promise = dispatch(fetchSongs(searchTerm));
+    return () => {
+      promise.abort();
+    };
+  }, [searchTerm]);
 
   return (
     <>
@@ -50,19 +57,32 @@ export default function MusicGrid() {
         </Box>
       </Box>
       <Grid container spacing={2} sx={{ m: 4, mt: 5 }}>
-        {songs?.length &&
-          songs.map((song: any) => {
+        {loading ? (
+          <h3>Loading...</h3>
+        ) : (
+          songs?.map((song: any) => {
             return (
-              <Grid item xs={4}>
-                <Item key={song.trackId} elevation={4}>
-                  <Typography variant="h6">{song.trackName}</Typography>
-                  <Typography variant="body2">{song.artistName}</Typography>
-                  <img src={song.artworkUrl100} alt={song.trackName} />
+              <StyledGrid item xs={4}>
+                <Item key={song.trackId} elevation={4} sx={{ p: 2 }}>
+                  <Typography variant="h6" noWrap={true} sx={{ mb: 0.5 }}>
+                    {song.trackName ? song.trackName : song.collectionName}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mb: 1 }}>
+                    {song.artistName}
+                  </Typography>
+                  <div style={{ marginBottom: 10 }}>
+                    <img
+                      src={song.artworkUrl100.replace("/100x100bb", "/80x80bb")}
+                      alt={song.trackName}
+                      style={{ borderRadius: 6 }}
+                    />
+                  </div>
                   <MusicPlayer songURL={song.previewUrl} />
                 </Item>
-              </Grid>
+              </StyledGrid>
             );
-          })}
+          })
+        )}
       </Grid>
     </>
   );

@@ -25,6 +25,7 @@ const musicSlice = createSlice({
     builder
       .addCase(fetchSongs.fulfilled, (state, action: any) => {
         state.songs = action.payload;
+        state.loading = false;
       })
       .addCase(fetchSongs.rejected, (state, action) => {
         state.songs = [];
@@ -40,7 +41,6 @@ const musicSlice = createSlice({
 export const fetchSongs = createAsyncThunk(
   "music/fetchSongs",
   async (searchTerm: string) => {
-    console.log(searchTerm);
     try {
       const response = await fetch(
         "https://itunes.apple.com/search?" + `term=${searchTerm}&limit=50`
